@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Classic Movie Reviews</title>
+		<style>
+			:root {
+				color-scheme: light;
+				--bg: #0f1115;
+				--panel: #171a21;
+				--panel-2: #1f2430;
+				--text: #f4f6fb;
+				--muted: #b6c0d4;
+				--accent: #ffcc66;
+				--accent-2: #5ccfe6;
+				--border: rgba(255, 255, 255, 0.08);
+				--shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+				--radius: 18px;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", system-ui,
+					-apple-system, sans-serif;
+				background: radial-gradient(circle at top, #222838, var(--bg));
+				color: var(--text);
+				min-height: 100vh;
+			}
+
+			header {
+				padding: 48px 16px 24px;
+				text-align: center;
+			}
+
+			header h1 {
+				margin: 0 0 8px;
+				font-size: clamp(28px, 4vw, 44px);
+				letter-spacing: -0.02em;
+			}
+
+			header p {
+				margin: 0 auto;
+				max-width: 720px;
+				color: var(--muted);
+				font-size: 16px;
+			}
+
+			main {
+				max-width: 1100px;
+				margin: 0 auto;
+				padding: 0 16px 64px;
+				display: grid;
+				gap: 24px;
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			}
+
+			.panel {
+				background: var(--panel);
+				border: 1px solid var(--border);
+				border-radius: var(--radius);
+				box-shadow: var(--shadow);
+				padding: 24px;
+			}
+
+			.form-panel {
+				grid-column: span 2;
+			}
+
+			.form-grid {
+				display: grid;
+				gap: 16px;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+			}
+
+			label {
+				display: block;
+				font-size: 14px;
+				color: var(--muted);
+				margin-bottom: 6px;
+			}
+
+			input,
+			select,
+			textarea {
+				width: 100%;
+				border-radius: 12px;
+				border: 1px solid var(--border);
+				background: var(--panel-2);
+				color: var(--text);
+				padding: 12px 14px;
+				font-size: 15px;
+				outline: none;
+			}
+
+			textarea {
+				min-height: 140px;
+				resize: vertical;
+			}
+
+			.actions {
+				display: flex;
+				gap: 12px;
+				justify-content: flex-end;
+				align-items: center;
+				margin-top: 8px;
+			}
+
+			button {
+				border: none;
+				border-radius: 999px;
+				padding: 12px 22px;
+				font-size: 15px;
+				cursor: pointer;
+				transition: transform 0.2s ease, box-shadow 0.2s ease;
+			}
+
+			button.primary {
+				background: linear-gradient(135deg, var(--accent), #f29e4c);
+				color: #1a1b1e;
+				font-weight: 700;
+				box-shadow: 0 12px 20px rgba(255, 204, 102, 0.2);
+			}
+
+			button.ghost {
+				background: transparent;
+				border: 1px solid var(--border);
+				color: var(--muted);
+			}
+
+			button:hover {
+				transform: translateY(-1px);
+			}
+
+			.reviews-header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 16px;
+				flex-wrap: wrap;
+			}
+
+			.reviews-header h2 {
+				margin: 0;
+				font-size: 20px;
+			}
+
+			.review-list {
+				margin-top: 20px;
+				display: grid;
+				gap: 16px;
+			}
+
+			.review-card {
+				background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent);
+				border: 1px solid var(--border);
+				border-radius: 16px;
+				padding: 18px;
+			}
+
+			.review-card h3 {
+				margin: 0 0 6px;
+				font-size: 18px;
+			}
+
+			.review-meta {
+				display: flex;
+				gap: 12px;
+				flex-wrap: wrap;
+				color: var(--muted);
+				font-size: 13px;
+			}
+
+			.rating {
+				color: var(--accent);
+				font-weight: 700;
+			}
+
+			.review-body {
+				margin-top: 12px;
+				line-height: 1.6;
+				color: #e5e8f0;
+				white-space: pre-wrap;
+			}
+
+			.empty {
+				padding: 40px 16px;
+				text-align: center;
+				color: var(--muted);
+				border: 1px dashed var(--border);
+				border-radius: 16px;
+			}
+
+			.badge {
+				background: rgba(92, 207, 230, 0.15);
+				color: var(--accent-2);
+				padding: 6px 12px;
+				border-radius: 999px;
+				font-size: 12px;
+			}
+
+			footer {
+				text-align: center;
+				color: var(--muted);
+				padding: 24px 16px 40px;
+				font-size: 13px;
+			}
+
+			@media (max-width: 840px) {
+				.form-panel {
+					grid-column: span 1;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>Classic Movie Reviews</h1>
+			<p>고전 영화의 감상과 추천 포인트를 기록하고 공유해 보세요. 작성한 리뷰는 즉시 홈페이지에 반영됩니다.</p>
+		</header>
+
+		<main>
+			<section class="panel form-panel">
+				<div class="reviews-header">
+					<h2>리뷰 작성</h2>
+					<span class="badge">즉시 반영</span>
+				</div>
+				<form id="reviewForm">
+					<div class="form-grid">
+						<div>
+							<label for="title">영화 제목</label>
+							<input id="title" name="title" placeholder="예: 카사블랑카" required />
+						</div>
+						<div>
+							<label for="year">개봉 연도</label>
+							<input
+								id="year"
+								name="year"
+								type="number"
+								min="1900"
+								max="1999"
+								placeholder="예: 1942"
+								required
+							/>
+						</div>
+						<div>
+							<label for="director">감독</label>
+							<input id="director" name="director" placeholder="예: 마이클 커티즈" required />
+						</div>
+						<div>
+							<label for="rating">평점</label>
+							<select id="rating" name="rating" required>
+								<option value="">선택</option>
+								<option value="5">★★★★★ (5)</option>
+								<option value="4">★★★★☆ (4)</option>
+								<option value="3">★★★☆☆ (3)</option>
+								<option value="2">★★☆☆☆ (2)</option>
+								<option value="1">★☆☆☆☆ (1)</option>
+							</select>
+						</div>
+					</div>
+					<div style="margin-top: 16px;">
+						<label for="review">리뷰 내용</label>
+						<textarea
+							id="review"
+							name="review"
+							placeholder="줄거리 요약보다는 감정과 인상 깊었던 장면을 적어보세요."
+							required
+						></textarea>
+					</div>
+					<div class="actions">
+						<button type="reset" class="ghost">초기화</button>
+						<button type="submit" class="primary">리뷰 올리기</button>
+					</div>
+				</form>
+			</section>
+
+			<section class="panel">
+				<div class="reviews-header">
+					<h2>홈페이지 최신 리뷰</h2>
+					<span class="badge" id="reviewCount">0개</span>
+				</div>
+				<div id="reviewList" class="review-list"></div>
+			</section>
+		</main>
+
+		<footer>Classic Movie Reviews · 고전 영화 컬렉션을 함께 만들어요.</footer>
+
+		<script>
+			const form = document.getElementById("reviewForm");
+			const reviewList = document.getElementById("reviewList");
+			const reviewCount = document.getElementById("reviewCount");
+
+			const STORAGE_KEY = "classic-movie-reviews";
+
+			const toStars = (rating) => "★".repeat(rating) + "☆".repeat(5 - rating);
+
+			const formatDate = (date) => {
+				return new Intl.DateTimeFormat("ko-KR", {
+					year: "numeric",
+					month: "long",
+					day: "numeric",
+				}).format(date);
+			};
+
+			const renderReviews = (reviews) => {
+				reviewList.innerHTML = "";
+				reviewCount.textContent = `${reviews.length}개`;
+
+				if (reviews.length === 0) {
+					const empty = document.createElement("div");
+					empty.className = "empty";
+					empty.textContent = "아직 등록된 리뷰가 없습니다. 첫 리뷰를 남겨보세요.";
+					reviewList.appendChild(empty);
+					return;
+				}
+
+				reviews.forEach((review) => {
+					const card = document.createElement("article");
+					card.className = "review-card";
+					card.innerHTML = `
+						<h3>${review.title}</h3>
+						<div class="review-meta">
+							<span>${review.year} · ${review.director}</span>
+							<span class="rating">${toStars(review.rating)} (${review.rating})</span>
+							<span>${review.date}</span>
+						</div>
+						<p class="review-body">${review.body}</p>
+					`;
+					reviewList.appendChild(card);
+				});
+			};
+
+			const loadReviews = () => {
+				const stored = localStorage.getItem(STORAGE_KEY);
+				if (!stored) {
+					return [];
+				}
+				try {
+					return JSON.parse(stored);
+				} catch (error) {
+					return [];
+				}
+			};
+
+			const saveReviews = (reviews) => {
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
+			};
+
+			let reviews = loadReviews();
+			renderReviews(reviews);
+
+			form.addEventListener("submit", (event) => {
+				event.preventDefault();
+
+				const formData = new FormData(form);
+				const newReview = {
+					title: formData.get("title").toString().trim(),
+					year: formData.get("year").toString().trim(),
+					director: formData.get("director").toString().trim(),
+					rating: Number(formData.get("rating")),
+					body: formData.get("review").toString().trim(),
+					date: formatDate(new Date()),
+				};
+
+				if (!newReview.title || !newReview.year || !newReview.director || !newReview.body) {
+					return;
+				}
+
+				reviews = [newReview, ...reviews];
+				saveReviews(reviews);
+				renderReviews(reviews);
+				form.reset();
+			});
+		</script>
+	</body>
+</html>

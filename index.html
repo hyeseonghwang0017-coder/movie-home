@@ -336,7 +336,12 @@
 			};
 
 			const loadReviews = () => {
-				const stored = localStorage.getItem(STORAGE_KEY);
+				let stored = null;
+				try {
+					stored = localStorage.getItem(STORAGE_KEY);
+				} catch (error) {
+					return [];
+				}
 				if (!stored) {
 					return [];
 				}
@@ -348,7 +353,11 @@
 			};
 
 			const saveReviews = (reviews) => {
-				localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
+				try {
+					localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
+				} catch (error) {
+					// 로컬 파일 또는 차단된 환경에서는 저장을 무시합니다.
+				}
 			};
 
 			let reviews = loadReviews();
